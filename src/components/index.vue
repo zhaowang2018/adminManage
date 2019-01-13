@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="4">
           <div class="grid-content bg-purple">
-            <img src="/static/logo.png" alt>
+            <img src="../../static/logo.png" alt>
           </div>
         </el-col>
         <el-col :span="16">
@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="4">
           <div class="grid-content bg-purple">
-            <a href="#" @click.prevent="logout" class="logout-btn">退出</a>
+            <el-button type="warning" @click="logout">退出</el-button>
           </div>
         </el-col>
       </el-row>
@@ -46,11 +46,54 @@
 </template>
 <script>
 export default {
-  name: "index"
+  name: "index",
+  data() {
+    return {
+      roles:[
+
+      ]
+    };
+  },
+  created() {
+    this.$axios.get("menus").then(res => {
+      // console.log(res);
+      this.roles = res.data.data;
+    });
+  },
+  methods: {
+    logout() {
+      window.sessionStorage.removeItem("token");
+      this.$router.push("login");
+    }
+  },
+  beforeCreate() {
+    // let token = window.sessionStorage["token"];
+    // console.log(token);
+    if (window.sessionStorage["token"]) {
+      this.$message({
+        message: "恭喜你，登录成功！",
+        type: "success"
+      });
+    }else{
+      this.$router.push('login');
+    }
+  }
 };
 </script>
-<style>
+<style lang="scss">
 .el-container {
-    background-color: #ccc;
+  background-color: #e9eef3;
+  .el-header {
+    background-color: #b3d0c1;
+    .title {
+      font-size: 24px;
+      color: #fff;
+      line-height: 60px;
+      text-align: center;
+    }
+    .el-button {
+      margin-top: 10px;
+    }
+  }
 }
 </style>
