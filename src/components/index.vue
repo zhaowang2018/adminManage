@@ -7,12 +7,12 @@
             <img src="../../static/logo.png" alt>
           </div>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="18">
           <div class="grid-content bg-purple">
             <div class="title">电商后台管理系统</div>
           </div>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="2">
           <div class="grid-content bg-purple">
             <el-button type="warning" @click="logout">退出</el-button>
           </div>
@@ -20,21 +20,24 @@
       </el-row>
     </el-header>
     <el-container>
-      <el-aside width="200px">
-        <el-menu default-active="users" :unique-opened="true" :router="true">
-          <el-submenu v-for="(role, index) in roles" :key="role.id" :index="index + ''">
+      <el-aside width="201px">
+        <el-menu
+          default-active="2"
+          class="el-menu-vertical-demo"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          router
+        >
+          <el-submenu v-for="(item, index) in memuList" :key="item.id" :index="item.order +''">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span slot="title">{{ role.authName }}</span>
+              <span>{{item.authName}}</span>
             </template>
-            <el-menu-item
-              v-for="subRole in role.children"
-              :key="subRole.id"
-              :index="'/' + subRole.path"
-            >
-              <i class="el-icon-menu"></i>
-              <span>{{ subRole.authName }}</span>
-            </el-menu-item>
+              <el-menu-item v-for="(it, v) in item.children" :key="it.id" :index="'/'+it.path">
+                <i class="el-icon-menu"></i>
+                {{it.authName}}
+              </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -49,38 +52,41 @@ export default {
   name: "index",
   data() {
     return {
-      roles:[
-
-      ]
+      memuList:[]
     };
   },
   created() {
     this.$axios.get("menus").then(res => {
       // console.log(res);
-      this.roles = res.data.data;
+      this.memuList = res.data.data;
     });
   },
   methods: {
     logout() {
-      window.sessionStorage.removeItem("token");
-      this.$router.push("login");
-    }
-  },
-  beforeCreate() {
-    // let token = window.sessionStorage["token"];
-    // console.log(token);
-    if (window.sessionStorage["token"]) {
-      this.$message({
-        message: "恭喜你，登录成功！",
-        type: "success"
-      });
-    }else{
-      this.$router.push('login');
+      this.$confirm("是否确定要退出?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "退出成功!"
+          });
+          window.sessionStorage.removeItem("token");
+          this.$router.push("login");
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消!"
+          });
+        });
     }
   }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .el-container {
   background-color: #e9eef3;
   .el-header {

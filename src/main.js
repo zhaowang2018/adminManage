@@ -17,9 +17,18 @@ Vue.config.productionTip = false
 //引入抽取的路由文件
 import router from './lib/router';
 
+//引入面包屑导航
+import mybreadcrumb from './components/mybreadcrumb.vue'
 
+//注册全局路由
+Vue.component('mybreadcrumb',mybreadcrumb)
 
+//引入全局时间格式过滤器 
+import moment from 'moment';
 
+Vue.filter('timeFormat',(value)=>{
+  return moment(value).format('YYYY MM DD HH:mm:ss');
+})
 new Vue({
   render: h => h(App),
   router

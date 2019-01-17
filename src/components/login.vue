@@ -57,13 +57,7 @@ export default {
             password:this.formData.password
           }).then(res => {
             // console.log(res);
-            if (res.data.meta.status === 400) {
-              this.$message.error(res.data.meta.msg);
-            } else if (res.data.meta.status == 200) {
-              this.$message({
-                message: res.data.meta.msg,
-                type: "success"
-              });
+            if (res.data.meta.status == 200) {   
               window.sessionStorage.setItem('token',res.data.data.token);
               //验证成功 跳转到index 页面
               this.$router.push('/');
